@@ -550,6 +550,142 @@ func resourceKsyunBareMetal() *schema.Resource {
 				Computed:    true,
 				Description: "ID of the primary network interface.",
 			},
+
+			// ==========================================
+			// 2025/04/10 Added - Missing fields from CreateEpc API
+			// ==========================================
+			"group_sub_type": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "The sub-type of Bare Metal server. Used when HostType specifies a package group code.",
+			},
+			"description": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The description of the Bare Metal.",
+			},
+			"anaconda": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Set:         schema.HashString,
+				Description: "Anaconda information for Bare Metal server.",
+			},
+			"framework": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Set:         schema.HashString,
+				Description: "Training framework information for Bare Metal server.",
+			},
+			"engine": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Set:         schema.HashString,
+				Description: "Inference engine information for Bare Metal server.",
+			},
+			"ai_model": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Set:         schema.HashString,
+				Description: "AI model information for Bare Metal server.",
+			},
+			"user_data": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Base64 encoded custom script for Bare Metal server.",
+			},
+			"storage_roce_network_interface_mode": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"bond3",
+					"single",
+				}, false),
+				Description: "Storage RoCE network interface mode. Valid Values: `bond3`, `single`.",
+			},
+			"roce_cluster": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Compute RoCE cluster name.",
+			},
+			"sroce_cluster": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Storage RoCE cluster name.",
+			},
+			"user_defined_data": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "User defined data (Base64 encoded, max 16KB).",
+			},
+			"client_token": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Client token for idempotency (max 64 ASCII characters).",
+			},
+			"network_card_name_format": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Network card name format. Valid Values: `ethN`, `ethNx`.",
+			},
+			"network_card_priority": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Network card priority. Valid Values: `VPC-RoCE`, `RoCE-VPC`.",
+			},
+			"file_system_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "File system ID for mounting file storage (requires storage RoCE support).",
+			},
+			"posix_acl_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "POSIX ACL ID for access authorization (requires storage RoCE support).",
+			},
+			"custom_install_config": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				ForceNew: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"key": {
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "The key of custom installation config.",
+						},
+						"value": {
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "The value of custom installation config.",
+						},
+					},
+				},
+				Description: "Custom installation configuration with key-value pairs.",
+			},
+			"delete_protection": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "unsupport",
+				ValidateFunc: validation.StringInSlice([]string{
+					"support",
+					"unsupport",
+				}, false),
+				Description: "Instance deletion protection. Valid Values: `support`, `unsupport`. Default is `unsupport`.",
+			},
 		},
 	}
 }

@@ -297,6 +297,29 @@ func (s *BareMetalService) CreateBareMetalCall(d *schema.ResourceData, resource 
 		},
 		"force_re_install": {Ignore: true},
 		"tags":             {Ignore: true},
+		// ==========================================
+		// 2025/04/10 Added - Missing fields mapping
+		// ==========================================
+		"anaconda": {
+			mapping: "Anaconda",
+			Type:    TransformWithN,
+		},
+		"framework": {
+			mapping: "Framework",
+			Type:    TransformWithN,
+		},
+		"engine": {
+			mapping: "Engine",
+			Type:    TransformWithN,
+		},
+		"ai_model": {
+			mapping: "AiModel",
+			Type:    TransformWithN,
+		},
+		"sroce_cluster": {
+			mapping: "SRoceCluster",
+		},
+		"custom_install_config": {Ignore: true},
 	}
 	req, err := SdkRequestAutoMapping(d, resource, false, transform, nil, SdkReqParameter{
 		onlyTransform: false,
@@ -308,6 +331,19 @@ func (s *BareMetalService) CreateBareMetalCall(d *schema.ResourceData, resource 
 	req["ChargeType"] = d.Get("charge_type")
 	if d.Get("trial").(bool) {
 		req["ChargeType"] = "Trial"
+	}
+
+	// ==========================================
+	// 2025/04/10 Added - Handle custom_install_config (Key-Value pairs)
+	// ==========================================
+	if v, ok := d.GetOk("custom_install_config"); ok {
+		configs := v.(*schema.Set).List()
+		for i, config := range configs {
+			idx := i + 1
+			configMap := config.(map[string]interface{})
+			req[fmt.Sprintf("CustomInstallConfig.%d.Key", idx)] = configMap["key"]
+			req[fmt.Sprintf("CustomInstallConfig.%d.Value", idx)] = configMap["value"]
+		}
 	}
 
 	callback = ApiCall{
