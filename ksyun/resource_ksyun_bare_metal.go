@@ -489,7 +489,7 @@ func resourceKsyunBareMetal() *schema.Resource {
 			"timed_regularization": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Trial timed conversion to regular status, when charge_type is `Trial`. Valid Values: `support`, `unsupported`.",
+				Description: "Trial timed conversion to regular status, when charge_type is `Trial`. Valid Values: `support`, `unsupport`.",
 			},
 			"tags": tagsSchema(),
 
@@ -538,6 +538,12 @@ func resourceKsyunBareMetal() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The name of storage roce network card. Valid Values `eth8x_bond` `storage_bond`.",
+			},
+
+			"roce_cluster": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The roce cluster id.",
 			},
 
 			"extension_network_interface_id": {
